@@ -5,6 +5,8 @@ on:
     types:
       - opened
       - synchronize
+    paths:
+      - deploy/helm/Chart.yaml
 
 jobs:
   check-appversion-change:
