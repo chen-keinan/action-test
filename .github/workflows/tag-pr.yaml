@@ -39,19 +39,7 @@ jobs:
           else
             echo "::set-output name=app_version_changed::false"
           fi
-
-      - name: Add label if appVersion changed
-        if: steps.check-appversion.outputs.app_version_changed == 'true'
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.issues.addLabels({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              labels: ['appversion-changed']
-            })
+          
       - name: add label
         if: steps.check-appversion.outputs.app_version_changed == 'true'
         uses: actions-ecosystem/action-add-labels@v1
