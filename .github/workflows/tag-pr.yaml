@@ -32,14 +32,14 @@ jobs:
       - name: Check for appVersion change
         id: check-appversion
         run: |
-          app_version_changed=$(git diff ${{ github.event.before }} ${{ github.sha }} Chart.yaml | grep -E '^\+\sappVersion:' | sed 's/^\+\sappVersion: //')
+          app_version_changed=$(git diff ${{ github.event.before }} ${{ github.sha }} Chart.yaml | grep -E '^\+\s*appVersion:' | sed 's/^\+\s*appVersion: //')
           if [ -n "$app_version_changed" ]; then
             echo "::set-output name=app_version_changed::true"
           else
             echo "::set-output name=app_version_changed::false"
           fi
 
-          version_changed=$(git diff ${{ github.event.before }} ${{ github.sha }} Chart.yaml | grep -E '^\+\sversion:' | sed 's/^\+\sversion: //')
+          version_changed=$(git diff ${{ github.event.before }} ${{ github.sha }} Chart.yaml | grep -E '^\+\s*version:' | sed 's/^\+\s*version: //')
           if [ -n "$version_changed" ]; then
             echo "::set-output name=version_changed::true"
           else
