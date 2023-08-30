@@ -5,13 +5,21 @@ on:
     types:
       - opened
       - synchronize
+    paths:
+      - Chart.yaml
+      
 
 jobs:
   check-appversion-change:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -24,27 +32,32 @@ jobs:
       - name: Check for appVersion change
         id: check-appversion
         run: |
-          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          if echo "$changed_files" | grep -q 'Chart.yaml'; then
-            app_version_changed=$(git diff ${{ github.event.before }} ${{ github.sha }} Chart.yaml | grep -E '^\+\s*appVersion:' | sed 's/^\+\s*appVersion: //')
-            if [ -n "$app_version_changed" ]; then
-              echo "::set-output name=app_version_changed::true"
-            else
-              echo "::set-output name=app_version_changed::false"
-            fi
+          app_version_changed=$(git diff ${{ github.event.before }} ${{ github.sha }} Chart.yaml | grep -E '^\+\s*appVersion:' | sed 's/^\+\s*appVersion: //')
+          if [ -n "$app_version_changed" ]; then
+            echo "::set-output name=app_version_changed::true"
           else
             echo "::set-output name=app_version_changed::false"
           fi
 
-      - name: Add label if appVersion changed
+          version_changed=$(git diff ${{ github.event.before }} ${{ github.sha }} Chart.yaml | grep -E '^\+\s*version:' | sed 's/^\+\s*version: //')
+          if [ -n "$version_changed" ]; then
+            echo "::set-output name=version_changed::true"
+          else
+            echo "::set-output name=version_changed::false"
+          fi
+          
+
+      - name: add label one
         if: steps.check-appversion.outputs.app_version_changed == 'true'
-        uses: actions/github-script@v5
+        uses: actions-ecosystem/action-add-labels@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.issues.addLabels({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              labels: ['appversion-changed']
-            })
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: app-version-changed
+
+      - name: add label one
+        if: steps.check-appversion.outputs.version_changed == 'true'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: chart-version-changed
+       
