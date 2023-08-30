@@ -1,0 +1,50 @@
+name: Label PR on appVersion Change
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  check-appversion-change:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check for appVersion change
+        id: check-appversion
+        run: |
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          if echo "$changed_files" | grep -q 'Chart.yaml'; then
+            app_version_changed=$(git diff ${{ github.event.before }} ${{ github.sha }} Chart.yaml | grep -E '^\+\s*appVersion:' | sed 's/^\+\s*appVersion: //')
+            if [ -n "$app_version_changed" ]; then
+              echo "::set-output name=app_version_changed::true"
+            else
+              echo "::set-output name=app_version_changed::false"
+            fi
+          else
+            echo "::set-output name=app_version_changed::false"
+          fi
+
+      - name: Add label if appVersion changed
+        if: steps.check-appversion.outputs.app_version_changed == 'true'
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['appversion-changed']
+            })
