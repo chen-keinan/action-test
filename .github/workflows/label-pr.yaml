@@ -1,9 +1,11 @@
 name: CI
 
 on:
-  pull_request:
+  pull_request_target:
     types: [ closed,labeled ]
-
+    paths:
+      - 'deploy/helm/Chart.yaml'
+    
 jobs:
   build:
     if: ${{ github.event.pull_request.merged == true && github.event.label.name == 'chart-version-changed' && github.event.label.name != 'app-version-changed'  }}
