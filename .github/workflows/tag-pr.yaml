@@ -44,5 +44,5 @@ jobs:
         if: steps.check-appversion.outputs.app_version_changed == 'true'
         uses: actions-ecosystem/action-add-labels@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: ready-for-publish
