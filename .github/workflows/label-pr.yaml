@@ -4,7 +4,7 @@ on:
   pull_request_target:
     types: [ closed,labeled ]
     paths:
-      - 'deploy/helm/Chart.yaml'
+      - Chart.yaml
     
 jobs:
   build:
