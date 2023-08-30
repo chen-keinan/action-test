@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -26,7 +28,7 @@ jobs:
       - name: Check for appVersion change
         id: check-appversion
         run: |
-          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }}
           if echo "$changed_files" | grep -q 'Chart.yaml'; then
             app_version_changed=$(git diff ${{ github.event.before }} ${{ github.sha }} Chart.yaml | grep -E '^\+\s*appVersion:' | sed 's/^\+\s*appVersion: //')
             if [ -n "$app_version_changed" ]; then
