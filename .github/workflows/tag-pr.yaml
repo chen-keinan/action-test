@@ -52,3 +52,8 @@ jobs:
               repo: context.repo.repo,
               labels: ['appversion-changed']
             })
+      - name: add label
+        if: steps.check-appversion.outputs.app_version_changed == 'true'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: ready-for-publish
