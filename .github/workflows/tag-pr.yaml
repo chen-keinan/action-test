@@ -34,7 +34,7 @@ jobs:
           echo "::set-output name=app_version::$app_version"
 
       - name: add app-version-changed label
-        if: steps.latest_tag.outputs.latest_tag != steps.chart_version.outputs.app_version
+        if: ${{ steps.latest_tag.outputs.latest_tag != steps.chart_version.outputs.app_version }}
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
