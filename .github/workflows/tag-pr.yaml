@@ -37,4 +37,11 @@ jobs:
         uses: actions-ecosystem/action-add-labels@v1
         with:
           labels: app-version-changed
+
+      - name: remove app-version-changed label
+        if: ${{ steps.latest_tag.outputs.tag == steps.chart_version.outputs.app_version }}
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: app-version-changed
+
        
