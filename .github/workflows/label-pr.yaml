@@ -2,7 +2,8 @@ name: CI
 
 on:
   pull_request_target:
-    types: [ closed,labeled ]
+    types:
+      - closed
     paths:
       - deploy/helm/Chart.yaml
     
