@@ -6,20 +6,11 @@ on:
     types: [ closed ]
 
 jobs:
-  ready_for_publish:
-    permissions:
-      pull-requests: read
-      checks: write
+  merge_job:
     # this job will only run if the PR has been merged
-    if: github.event.pull_request.merged == true 
+    if: github.event.pull_request.merged == true && "!contains(github.event.pull_request.labels.*.name, 'app-version-changed')"
     runs-on: ubuntu-latest
     steps:
-      - uses: danielchabr/pr-labels-checker@v3
-        id: checkLabel
-        with:
-          hasSome: app-version-changed
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-      
-      - uses: actions/checkout@v2
-      - name: Run a one-line script
-        run: echo Hello, world!
+    - uses: actions/checkout@v2
+    - name: Run a one-line script
+      run: echo Hello, world!
