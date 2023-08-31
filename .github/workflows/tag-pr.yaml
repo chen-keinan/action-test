@@ -6,7 +6,7 @@ on:
       - opened
       - synchronize
     paths:
-      - deplpy/helm/Chart.yaml
+      - deploy/helm/Chart.yaml
       
 
 jobs:
@@ -30,7 +30,7 @@ jobs:
       - name: Read Chart.yaml appVersion
         id: chart_version
         run: |
-          app_version=$(grep -E '^appVersion:' deplpy/helm/Chart.yaml | awk '{print $2}')
+          app_version=$(grep -E '^appVersion:' deploy/helm/Chart.yaml | awk '{print $2}')
           echo "::set-output name=app_version::$app_version"
 
       - name: add app-version-changed label
