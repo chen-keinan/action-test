@@ -2,7 +2,7 @@ name: Close Pull Request
 
 # only trigger on pull request closed events
 on:
-  pull_request:
+  pull_request_target:
     types: [ closed ]
     paths:
       - deploy/helm/Chart.yaml
@@ -10,7 +10,7 @@ on:
 jobs:
   merge_job:
     # this job will only run if the PR has been merged
-    if: github.event.pull_request.merged == true && "!contains(github.event.pull_request.labels.*.name, 'app-version-changed')"
+    if:  github.event.pull_request.merged == true && !contains(github.event.pull_request.labels.*.name, 'app-version-changed')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
