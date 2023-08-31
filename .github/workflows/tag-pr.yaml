@@ -29,35 +29,22 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check for appVersion change
-        id: check-appversion
+      - name: Get latest tag
+        id: latest_tag
         run: |
-          app_version_changed=$(git diff ${{ github.event.before }} ${{ github.event.after }}  Chart.yaml | grep -E '^\+\s*appVersion:' | sed 's/^\+\s*appVersion: //')
-          if [ -n "$app_version_changed" ]; then
-            echo "::set-output name=app_version_changed::true"
-          else
-            echo "::set-output name=app_version_changed::false"
-          fi
-
-          version_changed=$(git diff ${{ github.before }} ${{ github.event.after }} Chart.yaml | grep -E '^\+\s*version:' | sed 's/^\+\s*version: //')
-          if [ -n "$version_changed" ]; then
-            echo "::set-output name=version_changed::true"
-          else
-            echo "::set-output name=version_changed::false"
-          fi
+          latest_tag=$(git describe --tags --abbrev=0 | sed 's/v//')
+          echo "::set-output name=tag::$latest_tag"
           
+      - name: Read Chart.yaml appVersion
+        id: chart_version
+        run: |
+          app_version=$(grep -E '^appVersion:' Chart.yaml | awk '{print $2}')
+          echo "::set-output name=app_version::$app_version"
 
-      - name: add label one
-        if: steps.check-appversion.outputs.app_version_changed == 'true'
+      - name: add app-version-changed label
+        if: steps.latest_tag.outputs.latest_tag != steps.chart_version.outputs.app_version
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: app-version-changed
-
-      - name: add label one
-        if: steps.check-appversion.outputs.version_changed == 'true'
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: chart-version-changed
        
