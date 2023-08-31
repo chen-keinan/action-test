@@ -5,11 +5,12 @@ on:
     types:
       - closed
     paths:
-      - deploy/helm/Chart.yaml
+      - 'deploy/helm/Chart.yaml'
     
 jobs:
   build:
-    if: ${{ github.event.pull_request.merged == true }} &&  ${{ github.event.label.name != 'app-version-changed' }}
+    #if: ${{ github.event.pull_request.merged == true }} &&  ${{ github.event.label.name != 'app-version-changed' }}
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
