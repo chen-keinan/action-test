@@ -41,5 +41,6 @@ jobs:
         if: ${{ steps.latest_tag.outputs.tag != steps.chart_version.outputs.app_version }}
         uses: peter-evans/repository-dispatch@v1
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           event-type: my-event
           client-payload: '{"action": "do-not-publish"}'
