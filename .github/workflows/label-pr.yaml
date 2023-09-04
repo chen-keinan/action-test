@@ -14,7 +14,7 @@ on:
 jobs:
   merge_job:
     # this job will only run if the PR has been merged
-    if:  (!contains(github.event.pull_request.labels.*.name, 'app-version-changed')) 
+    if:  (!contains(github.event.workflow_run.pull_requests.*.labels.*.name, 'app-version-changed')) 
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
