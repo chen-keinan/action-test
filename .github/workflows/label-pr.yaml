@@ -2,11 +2,8 @@ name: Close Pull Request
 
 # only trigger on pull request closed events
 on:
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: The branch, tag or SHA to publish, e.g. v0.0.1
-        required: true
+  release:
+    types: [published]
   workflow_run:
     workflows: ["Label PR on appVersion Change"]
     types: 
@@ -17,14 +14,9 @@ on:
 jobs:
   merge_job:
     # this job will only run if the PR has been merged
-    if:  (!contains(github.event.pull_request.labels.*.name, 'app-version-changed') || github.event.inputs.ref != '') 
+    if:  (!contains(github.event.pull_request.labels.*.name, 'app-version-changed') 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      if:  github.event.inputs.ref != ''
-      with:
-          ref: ${{ github.event.inputs.ref }}
-          fetch-depth: 0
     - uses: actions/checkout@v2
       if:  github.event.inputs.ref == ''
       with:
