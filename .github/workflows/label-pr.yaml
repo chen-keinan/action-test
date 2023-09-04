@@ -1,20 +1,16 @@
-name: Close Pull Request
-
 # only trigger on pull request closed events
 on:
   release:
     types: [published]
-  workflow_run:
-    workflows: ["Label PR on appVersion Change"]
-    types: 
-      - completed
+  repository_dispatch:
+    types: [my-event]
     paths:
       - deploy/helm/Chart.yaml
 
 jobs:
   merge_job:
     # this job will only run if the PR has been merged
-    if:  (!contains(github.event.workflow_run.pull_requests.*.labels.*.name, 'app-version-changed')) 
+    if:  github.event.client_payload.action != 'do-not-publish' 
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
