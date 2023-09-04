@@ -39,4 +39,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           event-type: publish-chart
-          client-payload: '{"action": "publish-chart"}'
+          client-payload: '{"tag": "${{ github.ref }}","action": "publish-chart"}'
