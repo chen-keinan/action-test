@@ -7,9 +7,10 @@ on:
       ref:
         description: The branch, tag or SHA to publish, e.g. v0.0.1
         required: true
-  pull_request_target:
+  workflow_run:
+    workflows: ["Label PR on appVersion Change"]
     types: 
-      - closed 
+      - completed
     paths:
       - deploy/helm/Chart.yaml
 
