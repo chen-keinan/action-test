@@ -29,14 +29,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0 
-      - name: Release
-        uses: goreleaser/goreleaser-action@v4
-        with:
-          version: v1.7.0
-          args: release --rm-dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COSIGN_EXPERIMENTAL: 1
       - name: Repository Dispatch Label PR
         if: ${{ steps.latest_tag.outputs.tag == steps.chart_version.outputs.app_version }}
         uses: peter-evans/repository-dispatch@v1
