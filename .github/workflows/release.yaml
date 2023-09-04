@@ -1,0 +1,35 @@
+---
+# This workflow is triggered whenever we release a new version of trivy-operator
+# by creating an annotated Git tag and pushing it to the upstream Git repository.
+#
+#    git tag -a v0.0.1 -m 'Release v0.0.1'
+#    git push upstream v0.0.1
+name: Release
+on:
+  push:
+    tags:
+      - "v*"
+env:
+  GO_VERSION: 1.20.4
+  KIND_VERSION: v0.17.0
+  KIND_IMAGE: kindest/node:v1.21.1@sha256:69860bda5563ac81e3c0057d654b5253219618a22ec3a346306239bba8cfa1a6
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    env:  
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      COSIGN_EXPERIMENTAL: 1 
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
+    steps:
+      - name: Release
+        uses: goreleaser/goreleaser-action@v4
+        with:
+          version: v1.7.0
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COSIGN_EXPERIMENTAL: 1
