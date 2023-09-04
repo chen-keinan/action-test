@@ -1,4 +1,5 @@
 # only trigger on pull request closed events
+name: Publish
 on:
   release:
     types: [published]
