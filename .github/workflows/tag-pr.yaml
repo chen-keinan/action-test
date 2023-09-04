@@ -1,10 +1,9 @@
 name: Label PR on appVersion Change
 
 on:
-  pull_request:
+  pull_request_target:
     types:
-      - opened
-      - synchronize
+      - closed
     paths:
       - deploy/helm/Chart.yaml
       
