@@ -38,9 +38,9 @@ jobs:
           labels: app-version-changed
 
       - name: Repository Dispatch Label PR
-        if: ${{ steps.latest_tag.outputs.tag != steps.chart_version.outputs.app_version }}
+        if: ${{ steps.latest_tag.outputs.tag == steps.chart_version.outputs.app_version }}
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: my-event
-          client-payload: '{"action": "do-not-publish"}'
+          event-type: publish-chart
+          client-payload: '{"action": "publish-chart"}'
