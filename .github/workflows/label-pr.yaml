@@ -1,17 +1,15 @@
 # only trigger on pull request closed events
 name: Publish
 on:
-  release:
-    types: [published]
   repository_dispatch:
-    types: [my-event]
+    types: [publish-chart]
     paths:
       - deploy/helm/Chart.yaml
 
 jobs:
   merge_job:
     # this job will only run if the PR has been merged
-    if:  github.event.client_payload.action != 'do-not-publish' 
+    if:  github.event.client_payload.action == 'publish-chart' 
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
